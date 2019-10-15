@@ -1,5 +1,5 @@
 import http.server
-
+import router
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def send(self, status_code, message):
@@ -10,7 +10,10 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(bytes(message, "utf8"))
 
     def do_GET(self):
-        message = "Hello!"
-        print(self.path)
-        self.send(200, "Hello!")
+        result = router.doGet(self.path)
+
+        if(result != None):
+            self.send(200, result)
+        else:
+            self.send(404, "Not found")
         return

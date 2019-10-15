@@ -1,9 +1,9 @@
-import settings
 import os
 import socketserver
 import ssl
 
 from request_handler import RequestHandler
+import pksroutes
 
 bindPort = int(os.getenv("PORT", 8080))
 tlsEnabled = bool(os.getenv("TLS_ENABLED", False) == "true")
