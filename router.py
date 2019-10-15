@@ -1,5 +1,5 @@
 from routes import Mapper
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 getMap = Mapper()
 postMap = Mapper()
@@ -17,7 +17,7 @@ def executeController(map, path):
 
     request = Request(
         args = result,
-        query = {},
+        query = parse_qs(parsedPath.query),
         data = {},
         rawData = None
     )
