@@ -1,7 +1,7 @@
 import router
 from router import Response
 
-def testRoute(arg):
-    return Response(responseBody="ID: " + arg['id'], headers={"Test": "Hello"})
 
-router.get("/test/{id}", testRoute)
+@router.get("/test/{id}")
+def testRoute(request):
+    return Response(responseBody="ID: " + request.args['id'], headers={"Test": "Hello"})
