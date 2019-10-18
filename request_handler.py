@@ -12,7 +12,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         return self.do_Request(result)
 
     def do_PUT(self):
-        result = router.doPost(self)
+        result = router.doPut(self)
         return self.do_Request(result)
 
     def do_DELETE(self):

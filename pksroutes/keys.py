@@ -31,6 +31,37 @@ def post_createPublicKey(request):
     except:
         return Response(responseBody=json.dumps({'error': 'Invalid key format'}), contentType="application/json", statusCode = 400)
 
+@router.put("/v1/keys/{keyId}")
+def put_updatePublicKey(request):
+    reqBody = json.loads(request.body)
+    publicKey = reqBody['publicKey']
+    keyId = request.args['keyId']
+
+    if len(keyId) <= 4:
+        return Response(responseBody=json.dumps({'error': 'Key ID too short'}),
+                        contentType="application/json", statusCode=400)
+    try:
+        keyDER = b64decode(publicKey)
+        RSA.importKey(keyDER)
+
+        if (keystore.updateKey(keyId, publicKey)):
+            return Response(responseBody=json.dumps({'keyId': keyId, 'publicKey': publicKey}),
+                            contentType="application/json")
+        else:
+            return Response(responseBody=json.dumps({'error': 'Key not found'}),
+                            contentType="application/json", statusCode=404)
+    except:
+        return Response(responseBody=json.dumps({'error': 'Invalid key format'}), contentType="application/json", statusCode = 400)
+
+@router.delete("/v1/keys/{keyId}")
+def delete_deletePublicKey(request):
+    keyId = request.args['keyId']
+    if not keystore.deleteKey(keyId):
+        return Response(responseBody=json.dumps({'error': 'Key not found'}),
+                        contentType="application/json", statusCode=404)
+    else:
+        return Response(responseBody=json.dumps({'success': True}))
+
 @router.get("/v1/keys/{keyId}")
 def get_getPublicKey(request):
     keyId = request.args['keyId']

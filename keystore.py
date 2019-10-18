@@ -25,5 +25,9 @@ def updateKey(keyId, b64key):
     return True
 
 def deleteKey(keyId):
+    if (r.get(keyId) == None):
+        return False
+
     r.delete(keyId)
+    return True
 
