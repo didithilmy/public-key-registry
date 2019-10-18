@@ -60,7 +60,7 @@ def delete_deletePublicKey(request):
         return Response(responseBody=json.dumps({'error': 'Key not found'}),
                         contentType="application/json", statusCode=404)
     else:
-        return Response(responseBody=json.dumps({'success': True}))
+        return Response(responseBody=json.dumps({'success': True}), contentType="application/json")
 
 @router.get("/v1/keys/{keyId}")
 def get_getPublicKey(request):
