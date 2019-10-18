@@ -14,8 +14,21 @@ def addKey(keyId, b64key):
     r.set(keyId, b64key)
     return True
 
+
 def getKey(keyId):
     return r.get(keyId)
+
+
+def getAllKeys():
+    keyIds = r.keys()
+    keys = dict()
+    for keyId in keyIds:
+        keyId = keyId.decode('ascii')
+        key = r.get(keyId)
+        keys[keyId] = key
+
+    return keys
+
 
 def updateKey(keyId, b64key):
     if (r.get(keyId) == None):
@@ -23,6 +36,7 @@ def updateKey(keyId, b64key):
 
     r.set(keyId, b64key)
     return True
+
 
 def deleteKey(keyId):
     if (r.get(keyId) == None):

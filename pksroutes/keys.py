@@ -7,7 +7,7 @@ from base64 import b64decode
 
 import keystore
 import utils
-from jwcrypto.jwk import JWK
+from jwcrypto.jwk import JWK, JWKSet
 
 @router.post("/v1/keys/{keyId}")
 def post_createPublicKey(request):
@@ -62,6 +62,21 @@ def delete_deletePublicKey(request):
     else:
         return Response(responseBody=json.dumps({'success': True}), contentType="application/json")
 
+@router.get("/v1/keys/jwks")
+def get_getPublicKeysJwks(request):
+    keys = keystore.getAllKeys()
+
+    jwks = []
+    for keyId in keys.keys():
+        pemEncoded = "-----BEGIN PUBLIC KEY-----\r\n" + utils.insert_newlines(keys[keyId].decode("ascii"), 64) + "\r\n-----END PUBLIC KEY-----"
+        jwk = JWK.from_pem(pemEncoded.encode("ascii"))
+        jwkDecoded = json.loads(jwk.export_public())
+        jwkDecoded['kid'] = keyId
+        jwkDecoded['kty'] = "RSA"
+        jwks.append(jwkDecoded)
+
+    return Response(responseBody = json.dumps({'keys': jwks}, indent = 4), contentType = "application/json")
+
 @router.get("/v1/keys/{keyId}")
 def get_getPublicKey(request):
     keyId = request.args['keyId']
@@ -97,5 +112,8 @@ def get_getPublicKeyJwk(request):
     else:
         pemEncoded = "-----BEGIN PUBLIC KEY-----\r\n" + utils.insert_newlines(publicKey.decode("ascii"), 64) + "\r\n-----END PUBLIC KEY-----"
         jwk = JWK.from_pem(pemEncoded.encode("ascii"))
-        return Response(responseBody = jwk.export_public(), contentType = "application/json")
+        jwkDecoded = json.loads(jwk.export_public())
+        jwkDecoded['kid'] = keyId
+        jwkDecoded['kty'] = "RSA"
+        return Response(responseBody = json.dumps(jwkDecoded, indent=4), contentType = "application/json")
 
