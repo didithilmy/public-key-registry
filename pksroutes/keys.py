@@ -7,6 +7,7 @@ from base64 import b64decode
 
 import keystore
 import utils
+from jwcrypto.jwk import JWK
 
 @router.post("/v1/keys/{keyId}")
 def post_createPublicKey(request):
@@ -51,6 +52,19 @@ def get_getPublicKeyPem(request):
         return Response(responseBody=json.dumps({'error': 'Key not found'}),
                         contentType="application/json", statusCode=404)
     else:
-        pemEncoded = "-----BEGIN RSA PUBLIC KEY-----\n" + utils.insert_newlines(publicKey.decode("utf-8"), 64) + "\n-----END RSA PUBLIC KEY-----"
+        pemEncoded = "-----BEGIN PUBLIC KEY-----\n" + utils.insert_newlines(publicKey.decode("ascii"), 64) + "\n-----END PUBLIC KEY-----"
         return Response(responseBody = pemEncoded)
+
+@router.get("/v1/keys/{keyId}/jwk")
+def get_getPublicKeyJwk(request):
+    keyId = request.args['keyId']
+    publicKey = keystore.getKey(keyId)
+
+    if publicKey == None:
+        return Response(responseBody=json.dumps({'error': 'Key not found'}),
+                        contentType="application/json", statusCode=404)
+    else:
+        pemEncoded = "-----BEGIN PUBLIC KEY-----\r\n" + utils.insert_newlines(publicKey.decode("ascii"), 64) + "\r\n-----END PUBLIC KEY-----"
+        jwk = JWK.from_pem(pemEncoded.encode("ascii"))
+        return Response(responseBody = jwk.export_public(), contentType = "application/json")
 
