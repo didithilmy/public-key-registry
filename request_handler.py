@@ -4,19 +4,19 @@ from router import Response
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        result = router.doGet(self.path)
+        result = router.doGet(self)
         return self.do_Request(result)
 
     def do_POST(self):
-        result = router.doPost(self.path)
+        result = router.doPost(self)
         return self.do_Request(result)
 
     def do_PUT(self):
-        result = router.doPost(self.path)
+        result = router.doPost(self)
         return self.do_Request(result)
 
     def do_DELETE(self):
-        result = router.doDelete(self.path)
+        result = router.doDelete(self)
         return self.do_Request(result)
 
     def send(self, status_code = 200, message = None, headers = {}, content_type = "text/plain"):
