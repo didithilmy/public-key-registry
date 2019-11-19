@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.7.0-stretch
 EXPOSE 8080
 WORKDIR /code
 COPY . /code
