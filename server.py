@@ -12,7 +12,7 @@ def main():
     tlsKeyPath = str(os.getenv("TLS_KEY_PATH"))
     Handler = RequestHandler
 
-    with socketserver.TCPServer(("", bindPort), Handler) as httpd:
+    with socketserver.TCPServer(("0.0.0.0", bindPort), Handler) as httpd:
         print("Serving at port", bindPort)
         if (tlsEnabled):
             httpd.socket = ssl.wrap_socket(httpd.socket,
