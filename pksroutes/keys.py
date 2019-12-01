@@ -73,6 +73,7 @@ def get_getPublicKeysJwks(request):
         jwkDecoded = json.loads(jwk.export_public())
         jwkDecoded['kid'] = keyId
         jwkDecoded['kty'] = "RSA"
+        jwkDecoded['use'] = "sig"
         jwks.append(jwkDecoded)
 
     return Response(responseBody = json.dumps({'keys': jwks}, indent = 4), contentType = "application/json")
